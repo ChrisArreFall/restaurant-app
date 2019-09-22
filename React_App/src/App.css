@@ -1,33 +1,105 @@
 .App {
   text-align: center;
 }
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.AppFS {
+  background: #fff;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.fullscreen {
+  background: #fff;
+}
+.fullscreen-enabled .AppFS {
+  background: #fff;
+}
+
+.buttonDiv {
+  width: 135.73px;
+  overflow: hidden; /* for clearfix */
+}
+
+.menuDiv {
+  flex-grow: 1;
+}
+
+.backButton {
+  background-color: #008CBA;
+  border: none;
   color: white;
+  padding: 20px 50px;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  margin-bottom:120px;
 }
 
-.App-link {
-  color: #61dafb;
+.button {
+  background-color: #008CBA;
+  border: none;
+  color: white;
+  padding: 20px 50px;
+  text-align: left;
+  text-decoration: none;
+  display: block;
+  font-size: 16px;
+  margin-bottom:70px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.header {
+  padding: 1px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 20px;
+}
+
+
+.menu-box {
+  width: 840px;
+  height: 500px;
+  border: 5px solid #008CBA;
+  margin: 20px;
+  overflow: auto;
+}
+
+.inicio{
+  font-size: 40px;
+  text-align: center;
+  padding: 200px 270px;
+}
+
+.item-box {
+  width: 800px;
+  height: 50px;
+  border: 2px solid #000;
+  margin: 20px;
+}
+
+.check-box {
+  width: 20px;
+
+  position: relative;
+  top: 13px;
+  float:left;
+}
+
+.label-nombre {
+  position: relative;
+  top: 13px;
+  text-align: left;
+  float: left;
+  width: 50px;
+}
+
+.label-precio {
+  position: relative;
+  text-align: center;
+  top: 13px;
+}
+
+.img {
+  position: relative;
+  top: 13px;
+  float:center;
 }
