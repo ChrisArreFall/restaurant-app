@@ -1,0 +1,96 @@
+db.menu.insertMany([{
+    name: "Gallo Pinto",
+    price: 1500,
+    category: "Desayuno"
+},
+{
+    name: "Gallo Pinto con Huevo Frito",
+    price: 2000,
+    category: "Desayuno"
+},
+{
+    name: "Gallo Pinto con Huevo Frito y Tocineta",
+    price: 2500,
+    category: "Desayuno"
+},
+{
+    name: "Omelette",
+    price: 2500,
+    category: "Desayuno"
+},
+{
+    name: "Omelette Vegetariano",
+    price: 2700,
+    category: "Desayuno"
+},
+{
+    name: "Pizza Personal Jamón y Queso",
+    price: 2000,
+    category: "Entradas"
+},
+{
+    name: "Crema de Ayote",
+    price: 3700,
+    category: "Entradas"
+},
+{
+    name: "Sopa Mexicana",
+    price: 4000,
+    category: "Entradas"
+},
+{
+    name: "Ensalada Capresse",
+    price: 4600,
+    category: "Entradas"
+},
+{
+    name: "Pescado a la Pancha",
+    price: 6000,
+    category: "Plato Fuerte"
+},
+{
+    name: "Arroz con Palmito",
+    price: 6100,
+    category: "Plato Fuerte"
+},
+{
+    name: "Casados",
+    price: 5400,
+    category: "Plato Fuerte"
+},
+{
+    name: "Flan de Coco",
+    price: 2300,
+    category: "Postre"
+},
+{
+    name: "Tres Leches",
+    price: 2900,
+    category: "Postre"
+},
+{
+    name: "Cheese Cake con Fresas",
+    price: 3000,
+    category: "Postre"
+},
+{
+    name: "Queque Seco con Pasas",
+    price: 2000,
+    category: "Postre"
+},
+{
+    name: "Bebidas Naturales",
+    price: 1800,
+    category: "Bebidas"
+},
+{
+    name: "Café Filtrado",
+    price: 1500,
+    category: "Bebidas"
+},
+{
+    name: "Cappuccino",
+    price: 1700,
+    category: "Bebidas"
+}]
+)

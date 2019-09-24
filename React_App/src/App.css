@@ -13,7 +13,7 @@
 }
 
 .buttonDiv {
-  width: 135.73px;
+  width: 140px;
   overflow: hidden; /* for clearfix */
 }
 
@@ -25,7 +25,8 @@
   background-color: #008CBA;
   border: none;
   color: white;
-  padding: 20px 50px;
+  height: 60px;
+  width: 140px;
   text-align: left;
   text-decoration: none;
   display: block;
@@ -37,7 +38,8 @@
   background-color: #008CBA;
   border: none;
   color: white;
-  padding: 20px 50px;
+  height: 60px;
+  width: 140px;
   text-align: left;
   text-decoration: none;
   display: block;
@@ -57,7 +59,7 @@
 
 .menu-box {
   width: 840px;
-  height: 500px;
+  height: 570px;
   border: 5px solid #008CBA;
   margin: 20px;
   overflow: auto;
