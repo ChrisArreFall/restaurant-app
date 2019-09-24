@@ -23,4 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 
 react-mongo/mongodb-server/data
-React_App/node_modules/
+React_App/node_modules
