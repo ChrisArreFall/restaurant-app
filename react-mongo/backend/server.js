@@ -43,4 +43,5 @@ io.on("connection", socket => {
 
 app.use(express.static("build"));
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+//server.listen(port, () => console.log(`Listening on port ${port}`));
+server.listen(port, '192.168.43.121', () => console.log(`Listening on port ${port}`))
