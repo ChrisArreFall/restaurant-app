@@ -1,116 +1,159 @@
-import React from 'react'
+import React, {Component} from 'react';
+
 import '../../App.css';
+
 import MenuItem from '../../components/menu-item'
+import CategoryItem from '../category-item';
+import { socket } from '../../global/Header';
 
 
+export default class MenuContainer extends Component {
+	constructor() {
+		super();
+		this.state = {
+            food_data:[]
+		};
+        this.handleCategory = this.handleCategory.bind(this);
+	}
 
-const menuContainer = (props) => {
-    var text = props.page
-    var listItems = ""
-    if(text==="Inicio"){
-        return (
-            <div className="inicio">
-                <p>
-                    Bienvenido al restaurante!
-                </p>
-            </div>
+    handleCategory(_State) {
+        this.props.menuHandler(_State)
+    }
+
+    getData = menu => {
+        console.log(menu)
+        menu = menu.map( food => {
+            return food;
+        });
+        this.setState({food_data:menu})
+    }
+
+    componentDidMount(){
+        socket.emit("initial_data");
+        var state_current = this;
+        socket.on("get_data",state_current.getData);
+    }
+
+    componentWillUnmount(){
+        socket.off("get_data",this.getData)
+    }
+
+    getFoodData(){
+        return(this.state.food_data.map
         )
     }
-    else if(text==="Categorias"){
-        listItems = Object.keys(itemsCategories).map((item, i) =>
-        <MenuItem name={itemsCategories[item].text} value={itemsCategories[item].value} text={itemsCategories[item].text} precio=""/>)  
+    
+    menuContainer() {
+        var text = this.props.page
+        var listItems = ""
+        if(text==="Inicio"){
+            return (
+                <div>
+                    <div className="inicio">
+
+                    </div>
+                </div>
+                
+            )
+        }
+        else if(text==="Categorias"){
+            console.log("Entro a categorias.")
+            listItems = Object.keys(itemsCategories).map((item, i) =>
+                <CategoryItem key={i} category={itemsCategories[item].text} handleCategory={this.handleCategory} value={itemsCategories[item].value} text={itemsCategories[item].text} precio=""/>)  
+        }
+        else if(text==="Desayuno"){
+            console.log("Entro a Desayuno.")
+            listItems = Object.keys(this.state.food_data).map((item, i) => {
+                if(this.state.food_data[item].category==="Desayuno"){
+                    return <MenuItem stateP={false} key={i} handleSelectedItems={this.props.handleSelectedItems} selectedItems = {this.props.selectedItems} id={this.state.food_data[item]._id}  handleSelected={this.handleSelected} value={this.state.food_data[item].price} text={this.state.food_data[item].name} precio={this.state.food_data[item].price}/>
+                }
+                else{
+                    return <p/>
+                }
+            })
+        }
+        else if(text==="Plato Fuerte"){
+            listItems = Object.keys(this.state.food_data).map((item, i) => {
+                if(this.state.food_data[item].category==="Plato Fuerte"){
+                    return <MenuItem stateP={false} key={i} handleSelectedItems={this.props.handleSelectedItems} selectedItems = {this.props.selectedItems} id={this.state.food_data[item]._id}  handleSelected={this.handleSelected} value={this.state.food_data[item].price} text={this.state.food_data[item].name} precio={this.state.food_data[item].price}/>
+                }
+                else{
+                    return <p/>
+                }
+            })
+        }
+        else if(text==="Postre"){
+            listItems = Object.keys(this.state.food_data).map((item, i) => {
+                if(this.state.food_data[item].category==="Postre"){
+                    return <MenuItem stateP={false} key={i} handleSelectedItems={this.props.handleSelectedItems} selectedItems = {this.props.selectedItems} id={this.state.food_data[item]._id}  handleSelected={this.handleSelected} value={this.state.food_data[item].price} text={this.state.food_data[item].name} precio={this.state.food_data[item].price}/>
+                }
+                else{
+                    return <p/>
+                }
+            })    
+        }
+        else if(text==="Bebidas"){
+            listItems = Object.keys(this.state.food_data).map((item, i) => {
+                if(this.state.food_data[item].category==="Bebidas"){
+                    return <MenuItem stateP={false} key={i} handleSelectedItems={this.props.handleSelectedItems} selectedItems = {this.props.selectedItems} id={this.state.food_data[item]._id}  handleSelected={this.handleSelected} value={this.state.food_data[item].price} text={this.state.food_data[item].name} precio={this.state.food_data[item].price}/>
+                }
+                else{
+                    return <p/>
+                }
+            })
+        }
+        else if(text==="Mesero"){
+
+            return (
+                <div>
+                    <div className="mesero">
+                           ¡En seguida vendrá tu mesero!
+                    </div>
+                </div>
+                
+            )
+        }
+        else if(text==="Pagar"){
+            listItems = Object.keys(this.props.selectedItems).map((item, i) => {
+                return <MenuItem stateP={true} key={i} handleSelectedItems={this.props.handleSelectedItems} selectedItems = {this.props.selectedItems} id={this.state.food_data[item]._id}  handleSelected={this.handleSelected} value={this.state.food_data[item].price} text={this.state.food_data[item].name} precio={this.state.food_data[item].price}/>
+            })
+        }
+        if(text==="Pagar"){
+            var total = 0
+            Object.keys(this.props.selectedItems).map((item, i) => {
+                console.log(this.props.selectedItems[item].precio);
+                total += this.props.selectedItems[item].precio;
+            })
+            return(
+                <div className="menu-pagar">
+                    {listItems}
+                    <p className="total">
+                        Total: ₡{total}
+                    </p>
+                </div>
+            )
+        }
+        else{
+            return(
+                <div className="menu-box">
+                    {listItems}
+                </div>
+            )
+        }
     }
-    else if(text==="Breakfast"){
-        listItems = Object.keys(itemsBreakfast).map((item, i) =>
-        <MenuItem name={itemsBreakfast[item].text} value={itemsBreakfast[item].value} text={itemsBreakfast[item].text} precio={itemsBreakfast[item].precio}/>)  
-    }
-    else if(text==="Lunch"){
-        listItems = Object.keys(itemsLunch).map((item, i) =>
-        <MenuItem name={itemsLunch[item].text} value={itemsLunch[item].value} text={itemsLunch[item].text} precio={itemsLunch[item].precio}/>)  
-    }
-    else if(text==="Dinner"){
-        listItems = Object.keys(itemsDinner).map((item, i) =>
-        <MenuItem name={itemsDinner[item].text} value={itemsDinner[item].value} text={itemsDinner[item].text} precio={itemsDinner[item].precio}/>)  
-    }
-    else if(text==="Drink"){
-        listItems = Object.keys(itemsDrinks).map((item, i) =>
-        <MenuItem name={itemsDrinks[item].text} value={itemsDrinks[item].value} text={itemsDrinks[item].text} precio={itemsDrinks[item].precio}/>)  
-    }
-    return (
-        <div className="menu-box">
-            {listItems}
-        </div>
-    )
-};
 
-export default menuContainer;
-
-
-var itemsBreakfast = [
-    {id:0,category:"Breakfast",text:"Arroz",precio:200},
-    {id:1,category:"Breakfast",text:"Frijoles",precio:200},
-    {id:2,category:"Breakfast",text:"Huevo",precio:400},
-    {id:3,category:"Breakfast",text:"Manzana",precio:300},
-    {id:4,category:"Breakfast",text:"Pera",precio:300},
-    {id:5,category:"Breakfast",text:"Tamales",precio:1000},
-    {id:6,category:"Breakfast",text:"Panqueques",precio:1500},
-    {id:7,category:"Breakfast",text:"Maduro",precio:200},
-    {id:8,category:"Breakfast",text:"Chorizo",precio:200},
-    {id:9,category:"Breakfast",text:"Natilla",precio:200},
-    {id:10,category:"Breakfast",text:"Pinto",precio:400},
-    {id:11,category:"Breakfast",text:"Tostada",precio:200}
-]
-
-var itemsLunch = [
-    {id:0,category:"Lunch",text:"Arroz",precio:200},
-    {id:1,category:"Lunch",text:"Frijoles",precio:200},
-    {id:2,category:"Lunch",text:"Chuleta",precio:400},
-    {id:4,category:"Lunch",text:"Pollo",precio:300},
-    {id:5,category:"Lunch",text:"Res",precio:300},
-    {id:6,category:"Lunch",text:"Tamales",precio:1000},
-    {id:7,category:"Lunch",text:"Pizza",precio:1500},
-    {id:8,category:"Lunch",text:"Pollo Frito",precio:200},
-    {id:9,category:"Lunch",text:"Chorizo",precio:200},
-    {id:10,category:"Lunch",text:"Biztec",precio:200},
-    {id:11,category:"Lunch",text:"Maduro",precio:400},
-    {id:12,category:"Lunch",text:"Aguacate",precio:200}
-]
-
-
-
-var itemsDinner = [
-    {id:0,category:"Dinner",text:"Arroz",precio:200},
-    {id:1,category:"Dinner",text:"Frijoles",precio:200},
-    {id:2,category:"Dinner",text:"Huevo",precio:400},
-    {id:3,category:"Dinner",text:"Manzana",precio:300},
-    {id:4,category:"Dinner",text:"Pera",precio:300},
-    {id:5,category:"Dinner",text:"Tamales",precio:1000},
-    {id:6,category:"Dinner",text:"Panqueques",precio:1500},
-    {id:7,category:"Dinner",text:"Maduro",precio:200},
-    {id:8,category:"Dinner",text:"Chorizo",precio:200},
-    {id:9,category:"Dinner",text:"Natilla",precio:200},
-    {id:10,category:"Dinner",text:"Pinto",precio:400},
-    {id:11,category:"Dinner",text:"Tostada",precio:200}
-]
-var itemsDrinks = [
-    {id:0,category:"Drink",text:"Cas",precio:200},
-    {id:1,category:"Drink",text:"Guanavana",precio:200},
-    {id:2,category:"Drink",text:"Mango",precio:400},
-    {id:3,category:"Drink",text:"Chocolate",precio:300},
-    {id:4,category:"Drink",text:"Cafe",precio:300},
-    {id:5,category:"Drink",text:"Tequila",precio:1000},
-    {id:6,category:"Drink",text:"Vino",precio:1500},
-    {id:7,category:"Drink",text:"Agua",precio:0},
-    {id:8,category:"Drink",text:"Pepsi",precio:200},
-    {id:9,category:"Drink",text:"Coca",precio:200},
-    {id:10,category:"Drink",text:"Gin",precio:400},
-    {id:11,category:"Drink",text:"Fanta",precio:200}
-]
-
+	render() {
+		return (
+            <div >
+                {this.menuContainer()}
+            </div>
+		);
+	}
+}
 
 var itemsCategories = [
-    {id:0,text:"Breakfast"},
-    {id:1,text:"Lunch"},
-    {id:2,text:"Dinner"},
-    {id:3,text:"Drinks"}
+    {id:0,text:"Desayuno"},
+    {id:1,text:"Plato Fuerte"},
+    {id:2,text:"Postre"},
+    {id:3,text:"Bebidas"}
 ]

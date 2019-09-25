@@ -6,7 +6,7 @@ import MenuContainer from '../components/menuContainer';
 import '../App.css';
 
 
-export default class MessageContainer extends React.Component {
+export default class MainContainer extends React.Component {
   constructor(props) {
     super(props);
     this.button1 = React.createRef();
@@ -17,12 +17,14 @@ export default class MessageContainer extends React.Component {
     
 
     this.state = ({
-      selectedObjects: [],
+      selectedItems: [],
       total:0,
       page:"Inicio",
       currentButtonsState:buttons[0],
       buttonPressed:this.props.data.slice(0,1)[0]
     });
+    this.menuHandler = this.menuHandler.bind(this);
+    this.handleSelectedItems = this.handleSelectedItems.bind(this)
   }
   componentDidUpdate(prevProps, prevState) {
     // only update chart if the data has changed
@@ -47,6 +49,11 @@ export default class MessageContainer extends React.Component {
           break; 
       }
     
+  }
+
+  addMessage(){
+    const {mqtt} = this.props;
+    mqtt.publish('restaurant/waiter', "Call on table!");
   }
 
 
@@ -79,30 +86,34 @@ export default class MessageContainer extends React.Component {
         //Retornar button is only available in Categorias, Menu and Pagar
         switch (this.state.page){
           //Categorias
-          case "Categorias": 
+          case "Categorias":
             console.log("Going from Categorias to Inicio") 
             this.setState({page:"Inicio",currentButtonsState:buttons[0]})
             break;
           //Menu
-          case 'Breakfast': 
+          case "Desayuno": 
             console.log("Going from Menu to Categorias")
             this.setState({page:"Categorias",currentButtonsState:buttons[1]})
             break;
-          case 'Lunch': 
+          case "Plato Fuerte": 
             console.log("Going from Menu to Categorias")
             this.setState({page:"Categorias",currentButtonsState:buttons[1]})
             break;
-          case 'Dinner':
+          case "Postre":
             console.log("Going from Menu to Categorias")
             this.setState({page:"Categorias",currentButtonsState:buttons[1]}) 
             break;
-          case 'Drinks': 
+          case "Bebidas": 
             console.log("Going from Menu to Categorias")
             this.setState({page:"Categorias",currentButtonsState:buttons[1]})
             break;
           //Pagar
-          case 'Pagar': 
+          case "Pagar": 
             console.log("Going from Pagar to Inicio")
+            this.setState({page:"Inicio",currentButtonsState:buttons[0]})
+            break;
+          case "Mesero": 
+            console.log("Going from Mesero to Inicio")
             this.setState({page:"Inicio",currentButtonsState:buttons[0]})
             break;
           default:
@@ -121,10 +132,16 @@ export default class MessageContainer extends React.Component {
         }
         break;
       case 3:
-        //Llamar meser button is always available
-
-        //do something
-
+        //Llamar mesero button is always available
+        switch (this.state.page){
+          case "Inicio": 
+            this.addMessage();
+            console.log("Going from Mesero to Inicio") 
+            this.setState({page:"Mesero",currentButtonsState:buttons[5]})
+            break;
+          default:
+            break;
+        }
         break;
       case 4:
         //Pagar o deseleccionar todo button is only available in Inicio and Menu 
@@ -135,16 +152,16 @@ export default class MessageContainer extends React.Component {
             this.setState({page:"Pagar",currentButtonsState:buttons[3]})
             break;
           //Menu
-          case 'Breakfast': 
+          case 'Desayuno': 
             console.log("Deselected in Breakfast")
             break;
-          case 'Lunch': 
+          case 'Plato Fuerte': 
             console.log("Deselected Lunch")
             break;
-          case 'Dinner':
+          case 'Postre':
             console.log("Deselected Dinner")
             break;
-          case 'Drinks': 
+          case 'Bebidas': 
             console.log("Deselected Drinks")
             break;
           default:
@@ -171,6 +188,35 @@ export default class MessageContainer extends React.Component {
         break;
     }
   }
+
+  menuHandler(_State){
+    this.setState({page:_State,currentButtonsState:buttons[2]})
+  }
+
+  handleSelectedItems(_State){
+    console.log(_State.status);
+    if(_State.status){
+      this.setState(()=>{
+        console.log("Added: "+{_State})
+        var temp = this.state.selectedItems
+        temp.push(_State)
+        return {selectedItems:temp}
+      })
+    }
+    else{
+      this.setState(()=>{
+        var temp = this.state.selectedItems
+        console.log("Eliminated: "+{_State})
+        for( var i = 0; i < temp.length; i++){ 
+          if ( temp[i].id === _State.id) {
+            temp.splice(i, 1);
+          }
+        }
+        return {selectedItems:temp}
+      })
+    }
+    console.log(this.state.selectedItems)
+  }
   
   render(){
     return (
@@ -184,7 +230,7 @@ export default class MessageContainer extends React.Component {
         </div>
         <div className="menuDiv">
             <Header text={this.state.page}/>
-            <MenuContainer page={this.state.page} css="menu-box"/>
+            <MenuContainer handleSelectedItems = {this.handleSelectedItems} selectedItems={this.state.selectedItems} page={this.state.page} menuHandler={this.menuHandler} css="menu-box"/>
         </div>
       </div>
     )
@@ -195,143 +241,37 @@ export default class MessageContainer extends React.Component {
 const buttons = [//State Inicio
                 [{label:"null", visibility:"hidden"},
                  {label:"Ordenar", visibility:"visible"},
-                 {label:"Llamar mesero", visibility:"visible"},
+                 {label:"Mesero", visibility:"visible"},
                  {label:"Pagar", visibility:"visible"},
                  {label:"null", visibility:"hidden"}],
                  //State Categorias
                 [{label:"Regresar", visibility:"visible"},
                  {label:"null", visibility:"hidden"},
-                 {label:"Llamar mesero", visibility:"visible"},
-                 {label:"Pagar", visibility:"visible"},
-                 {label:"Seleccionar", visibility:"visible"}],
+                 {label:"Mesero", visibility:"visible"},
+                 {label:"Pagar", visibility:"hidden"},
+                 {label:"Seleccionar", visibility:"hidden"}],
                  //State Menu
                 [{label:"Regresar", visibility:"visible"},
-                 {label:"Ordenar", visibility:"visible"},
-                 {label:"Llamar mesero", visibility:"visible"},
-                 {label:"Pagar", visibility:"visible"},
+                 {label:"Ordenar", visibility:"hidden"},
+                 {label:"Mesero", visibility:"visible"},
+                 {label:"Pagar", visibility:"hidden"},
                  {label:"null", visibility:"hidden"}],
                  //State Pagar
                 [{label:"Regresar", visibility:"visible"},
                  {label:"null", visibility:"hidden"},
-                 {label:"Llamar mesero", visibility:"visible"},
+                 {label:"Mesero", visibility:"visible"},
                  {label:"Pagar", visibility:"visible"},
                  {label:"null", visibility:"hidden"}],
                  //State Ordenar
                 [{label:"Regresar", visibility:"visible"},
                  {label:"null", visibility:"hidden"},
-                 {label:"Llamar mesero", visibility:"visible"},
+                 {label:"Mesero", visibility:"visible"},
                  {label:"null", visibility:"hidden"},
                  {label:"Aceptar", visibility:"visible"}],
+                 //Mesero
+                [{label:"Regresar", visibility:"visible"},
+                 {label:"null", visibility:"hidden"},
+                 {label:"Mesero", visibility:"hidden"},
+                 {label:"null", visibility:"hidden"},
+                 {label:"Aceptar", visibility:"hidden"}]
                 ]
-/*
-switch (buttonPressed) {
-      case "button1":
-        switch (this.state.page){
-          case "Ordenar": 
-            console.log("Going from Ordenar to Inicio") 
-            return <MainContainer properties={buttons[0]}/>;
-          case 'Breakfast': 
-            return <MainContainer />; 
-          case 'Lunch': 
-            return <MainContainer />;
-          case 'Dinner': 
-            return <MainContainer />; 
-          case 'Drinks': 
-            return <MainContainer />;
-          case 'Pagar': 
-            return <MainContainer />;  
-          default:
-            return <MainContainer />; 
-        }
-      case "button2":
-          switch (this.state.page){
-            case "Inicio":
-              console.log("Going from Inicio to Ordenar") 
-              return <MainContainer properties={buttons[0]}/>;
-            case 'Breakfast': 
-              return <MainContainer />; 
-            case 'Lunch': 
-              return <MainContainer />;
-            case 'Dinner': 
-              return <MainContainer />; 
-            case 'Drinks': 
-              return <MainContainer />;
-            case 'Pagar': 
-              return <MainContainer />;  
-            default:
-              return <MainContainer />; 
-          }
-        case "button3":
-            switch (this.state.page){
-              case 'Ordenar':
-                return <MainContainer properties={this.state.currentState}/>;
-              case 'Breakfast': 
-                return <MainContainer />; 
-              case 'Lunch': 
-                return <MainContainer />;
-              case 'Dinner': 
-                return <MainContainer />; 
-              case 'Drinks': 
-                return <MainContainer />;
-              case 'Pagar': 
-                return <MainContainer />;  
-              default:
-                return <MainContainer />; 
-            }
-          case "button4":
-              switch (this.state.page){
-                case 'Ordenar': 
-                  return <MainContainer />;
-                case 'Breakfast': 
-                  return <MainContainer />; 
-                case 'Lunch': 
-                  return <MainContainer />;
-                case 'Dinner': 
-                  return <MainContainer />; 
-                case 'Drinks': 
-                  return <MainContainer />;
-                case 'Pagar': 
-                  return <MainContainer />;  
-                default:
-                  return <MainContainer />; 
-              }
-            case "button5":
-                switch (this.state.page){
-                  case 'Ordenar': 
-                    return <MainContainer />;
-                  case 'Breakfast': 
-                    return <MainContainer />; 
-                  case 'Lunch': 
-                    return <MainContainer />;
-                  case 'Dinner': 
-                    return <MainContainer />; 
-                  case 'Drinks': 
-                    return <MainContainer />;
-                  case 'Pagar': 
-                    return <MainContainer />;  
-                  default:
-                    return <MainContainer />; 
-                }
-      default:
-          switch (this.state.page){
-            case "Inicio": 
-              console.log("Currently in state Inicio") 
-              return <MainContainer properties={buttons[0]}/>;
-            case "Ordenar": 
-              console.log("Currently in state Ordenar") 
-              return <MainContainer properties={buttons[1]}/>;
-            case 'Breakfast': 
-              return <MainContainer />; 
-            case 'Lunch': 
-              return <MainContainer />;
-            case 'Dinner': 
-              return <MainContainer />; 
-            case 'Drinks': 
-              return <MainContainer />;
-            case 'Pagar': 
-              return <MainContainer />;  
-            default:
-              return <MainContainer />; 
-          } 
-
-*/

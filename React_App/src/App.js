@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import { Switch, Route } from "react-router-dom";
 import './App.css';
 
 import Fullscreen from "react-full-screen";
 
-import { Connector } from 'mqtt-react';
-import { subscribe } from 'mqtt-react';
+import { subscribe , Connector } from 'mqtt-react';
 
 
 import _MainContainer from './mqtt/MainContainer';
+import { Header } from "./global/Header"
 
 
 const MainContainer = subscribe({topic: 'restaurant/buttons'})(_MainContainer);
@@ -40,8 +41,13 @@ class App extends Component {
           onChange={isFull => this.setState({isFull})}
         >
           <div className="fullscreen-enabled">
-            <Connector mqttProps="ws://192.168.100.103:12345/">
-              <MainContainer/>
+            <Connector mqttProps="ws://192.168.43.121:15220/">
+              <div>
+                <Header />
+                <Switch>
+                  <Route exact path="/" component={MainContainer} />
+                </Switch>
+              </div>
             </Connector>
           </div>
         </Fullscreen>
